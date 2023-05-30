@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/kitex_gen/rpc"
-	"github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/db"
-	validate "github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/validation"
+	"github.com/dtzr09/IM_service/rpc-server/kitex_gen/rpc"
+	"github.com/dtzr09/IM_service/rpc-server/db"
+	validate "github.com/dtzr09/IM_service/rpc-server/validation"
 	"time"
 	"strings"
 )

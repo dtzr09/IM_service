@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"context"
-	rpc "github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/kitex_gen/rpc/imservice"
+	rpc "github.com/dtzr09/IM_service/rpc-server/kitex_gen/rpc/imservice"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"

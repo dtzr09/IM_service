@@ -2,7 +2,7 @@ package validation
 
 import (
 	"testing"
-	"github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/kitex_gen/rpc"
+	"github.com/dtzr09/IM_service/rpc-server/kitex_gen/rpc"
 	"errors"
 	"github.com/stretchr/testify/assert"
 )
