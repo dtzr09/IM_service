@@ -1,8 +1,5 @@
--- CREATE USER 'test'@'localhost';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
--- GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost' WITH GRANT OPTION;
--- GRANT ALL PRIVILEGES ON *.* TO 'username'@'%'  WITH GRANT OPTION;
 
 FLUSH PRIVILEGES;
 
