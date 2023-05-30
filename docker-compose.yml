@@ -43,8 +43,9 @@ services:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_ALLOW_EMPTY_PASSWORD=1
     ports:
-      - "3307:3306"
+      - "3308:3306"
     command: --init-file /data/application/init.sql
     volumes:
+      - ./rpc-server/my.cnf:/etc/mysql/my.cnf:ro
       - ./data:/var/lib/mysql
       - ./rpc-server/init.sql:/data/application/init.sql:ro

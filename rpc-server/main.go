@@ -14,7 +14,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	if err_db := db_client.InitClient(ctx,"root:password@tcp(IMDB_service)/messaging_service"); err_db != nil {
+	if err_db := db_client.InitClient(ctx,"user06:password@tcp(IMDB_service)/messaging_service"); err_db != nil {
 		log.Println("Error initializing MySQL client:", err_db)
 		return
 	}
