@@ -6,9 +6,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/kitex_gen/rpc"
+	"github.com/dtzr09/IM_service/rpc-server/kitex_gen/rpc"
 	"github.com/stretchr/testify/assert"
-	// "github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/db"
+	// "github.com/dtzr09/IM_service/rpc-server/db"
 	// sqlmock "github.com/DATA-DOG/go-sqlmock"
 
 )
