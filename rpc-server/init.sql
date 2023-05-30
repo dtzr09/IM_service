@@ -1,13 +1,12 @@
-CREATE USER 'test'@'localhost' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost' WITH GRANT OPTION;
-
-CREATE USER 'test'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON *.* TO 'username'@'%' WITH GRANT OPTION;
+-- CREATE USER 'test'@'localhost';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+-- GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost' WITH GRANT OPTION;
+-- GRANT ALL PRIVILEGES ON *.* TO 'username'@'%'  WITH GRANT OPTION;
 
 FLUSH PRIVILEGES;
 
-CREATE DATABASE IF NOT EXISTS im_service;
-USE im_service;
+CREATE DATABASE IF NOT EXISTS messaging_service;
+USE messaging_service;
 
 CREATE TABLE IF NOT EXISTS messages (
   message_id INT AUTO_INCREMENT PRIMARY KEY,

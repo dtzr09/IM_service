@@ -38,9 +38,10 @@ services:
     image: mysql:latest
     container_name: IMDB_service
     environment:
-      - MYSQL_DATABASE=im_service
+      - MYSQL_DATABASE=messaging_service
       - MYSQL_ROOT_HOST=%
       - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
     ports:
       - "3307:3306"
     command: --init-file /data/application/init.sql
