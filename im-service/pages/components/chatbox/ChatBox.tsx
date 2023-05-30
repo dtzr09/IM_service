@@ -1,13 +1,26 @@
 import styles from "./_chatbox.module.scss";
 import { BsFillCaretRightFill } from "react-icons/bs";
 import { ConversationBox } from "../conversationbox/ConversationBox";
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export const ChatBox = () => {
   const [response, setResponse] = useState(null);
   const [message, setMessage] = useState<string>("");
   const [allMessage, setAllMessage] = useState<any>();
   const [user, setUser] = useState("john");
+  const [cursor, setCursor] = useState(0);
+
+  const chatBoxRef = useRef<HTMLDivElement | null>(null);
+
+  // Scroll to the latest conversation box
+  const scrollToLatest = () => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  useEffect(() => {
+    scrollToLatest();
+  }, [allMessage]);
 
   const sendMsgReq = async () => {
     try {
@@ -38,8 +51,8 @@ export const ChatBox = () => {
     try {
       const requestParams = {
         chat: "john:doe",
-        cursor: "0",
-        limit: "10",
+        cursor: String(cursor),
+        limit: "50",
         reverse: "false",
       };
 
@@ -63,23 +76,30 @@ export const ChatBox = () => {
   };
 
   useEffect(() => {
+    // if (allMessage && allMessage.has_more) {
+    //   setCursor(allMessage.next_cursor);
+    // }
     pullMsgReq();
-  }, [user]);
+  }, [user, allMessage?.has_more, cursor]);
 
   return (
     <div className={styles.wrapperBox}>
       <div className={styles.chatBox}>
         <div className={styles.containerBox}>
           {allMessage &&
-            allMessage?.messages?.map((message: any) => {
+            allMessage?.messages?.map((message: any, index: number) => {
               return (
-                <>
+                <div
+                  key={index}
+                  ref={
+                    index === allMessage.messages.length - 1 ? chatBoxRef : null
+                  }
+                >
                   <ConversationBox
-                    key={message.sender}
                     from={message.sender}
                     inputValue={message.text}
                   />
-                </>
+                </div>
               );
             })}
         </div>

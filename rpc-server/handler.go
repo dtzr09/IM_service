@@ -73,6 +73,7 @@ func (s *IMServiceImpl) Pull(ctx context.Context, req *rpc.PullRequest) (*rpc.Pu
 	cursor := req.Cursor
 	limit := req.Limit
 	
+	
 	if err := validate.ValidateChatFormat(chat); err != nil {
 		resp.Code = 500
 		resp.Msg = err.Error()
@@ -80,9 +81,10 @@ func (s *IMServiceImpl) Pull(ctx context.Context, req *rpc.PullRequest) (*rpc.Pu
 	}
 
 	//set default limit to be 10 (if limit is not specified, default 0)
-	if req.Limit == 0{
+	if limit == 0{
 		limit = 10
 	}
+
 	reverse := req.Reverse
 	reverseSetting := "ASC"
 	if reverse != nil && *reverse {

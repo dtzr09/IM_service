@@ -28,20 +28,21 @@ func GetMessages(db_client MySQLClient, reverseSetting string, chat string, curs
 	sortedChat := strings.Join(names, ":")
 
 	query := `SELECT *, 
-							(SELECT COUNT(*) FROM messages WHERE chat = ?) AS total_count
-							FROM messages
-							WHERE chat = ? 
-							AND sendtime >= ?
-							ORDER BY sendtime ` + reverseSetting + `
-						`
-	rows, err := db_client.SelectQuery(query, sortedChat, sortedChat, cursor)
-	
-	if err != nil {
-		log.Println("Error executing query:", err)
-		return rows, err
-	}
+	(SELECT COUNT(*) FROM messages WHERE chat = ? AND sendtime >= ?) AS total_count
+	FROM messages
+	WHERE chat = ? 
+	AND sendtime >= ?
+	ORDER BY sendtime ` + reverseSetting + `
+	`
 
-	return rows, nil
+	rows, err := db_client.SelectQuery(query, sortedChat, cursor, sortedChat, cursor)
+		
+		if err != nil {
+			log.Println("Error executing query:", err)
+			return rows, err
+		}
+
+		return rows, nil
 }
 
 func GetProperties(rows *sql.Rows, limit int32)([]*rpc.Message, int64, bool, error){
@@ -78,6 +79,5 @@ func GetProperties(rows *sql.Rows, limit int32)([]*rpc.Message, int64, bool, err
 	}
 
 	hasMore := int32(totalCount) > limit
-
 	return messages, sendTime, hasMore, nil
 }
