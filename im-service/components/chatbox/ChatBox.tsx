@@ -2,13 +2,14 @@ import styles from "./_chatbox.module.scss";
 import { BsFillCaretRightFill } from "react-icons/bs";
 import { ConversationBox } from "../conversationbox/ConversationBox";
 import { useRef, useEffect, useState } from "react";
+import { pullMsgReq, sendMsgReq } from "../functions/http_request";
 
 export const ChatBox = () => {
-  const [response, setResponse] = useState(null);
   const [message, setMessage] = useState<string>("");
   const [allMessage, setAllMessage] = useState<any>();
-  const [user, setUser] = useState("john");
-  const [limit, setLimit] = useState(0);
+  const [user, setUser] = useState<string>("john");
+  const [limit, setLimit] = useState<number>(50);
+  const [hasMore, setHasMore] = useState<boolean>(false);
 
   const chatBoxRef = useRef<HTMLDivElement | null>(null);
   const sendMsgRef = useRef<HTMLDivElement | null>(null);
@@ -18,67 +19,28 @@ export const ChatBox = () => {
       chatBoxRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   useEffect(() => {
     scrollToLatest();
   }, [chatBoxRef, allMessage]);
 
-  const sendMsgReq = async () => {
-    try {
-      const requestBody = {
-        chat: "john:doe",
-        text: message,
-        sender: user,
-      };
-      const response = await fetch("/api/send", {
-        method: "POST",
-        body: JSON.stringify(requestBody),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const responseData = await response.json();
-      setResponse(responseData);
-      setUser(user == "john" ? "doe" : "john");
-      setMessage("");
-    } catch (error) {
-      console.error("Error making POST request:", error);
-    }
-  };
-
-  const pullMsgReq = async () => {
-    try {
-      const requestParams = {
-        chat: "john:doe",
-        cursor: "0",
-        limit: String(limit),
-        reverse: "false",
-      };
-
-      const queryParams = new URLSearchParams(requestParams).toString();
-
-      const response = await fetch(
-        `http://localhost:8080/api/pull/messages?${queryParams}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-      setAllMessage(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   useEffect(() => {
-    if (sendMsgRef.current && sendMsgRef.current.id == "enterButton")
-      setLimit(limit + 1);
-    pullMsgReq();
-  }, [user]);
+    const fetchData = async () => {
+      const data = await pullMsgReq({ limit });
+      if (data) {
+        setHasMore(data.has_more);
+        setAllMessage(data.messages);
+      }
+    };
+
+    fetchData();
+  }, [user, limit]);
+
+  const handleSendMsg = async () => {
+    const responseData = await sendMsgReq({ message, user });
+    setUser(user == "john" ? "doe" : "john");
+    setMessage("");
+  };
 
   const handleOnKeyDown = (event: any) => {
     if (
@@ -86,6 +48,10 @@ export const ChatBox = () => {
       sendMsgRef.current &&
       sendMsgRef.current.id == "enterButton"
     ) {
+      if (hasMore) {
+        const newLimit = limit + 1;
+        setLimit(newLimit);
+      }
       event.preventDefault();
       sendMsgRef.current.click();
     }
@@ -96,13 +62,11 @@ export const ChatBox = () => {
       <div className={styles.chatBox}>
         <div className={styles.containerBox}>
           {allMessage &&
-            allMessage?.messages?.map((message: any, index: number) => {
+            allMessage.map((message: any, index: number) => {
               return (
                 <div
                   key={index}
-                  ref={
-                    index === allMessage.messages.length - 1 ? chatBoxRef : null
-                  }
+                  ref={index === allMessage.length - 1 ? chatBoxRef : null}
                 >
                   <ConversationBox
                     from={message.sender}
@@ -124,7 +88,7 @@ export const ChatBox = () => {
             className={styles.iconBox}
             ref={sendMsgRef}
             onClick={() => {
-              sendMsgReq();
+              handleSendMsg();
             }}
           >
             <BsFillCaretRightFill size={"30px"} />
