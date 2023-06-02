@@ -34,7 +34,7 @@ func main() {
 
 	h := server.Default(server.WithHostPorts("0.0.0.0:8080"))
 	h.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST"},
     AllowHeaders:     []string{"Origin", "Content-Type"}, // Include "Content-Type" header
 		ExposeHeaders:    []string{"Content-Length"},
