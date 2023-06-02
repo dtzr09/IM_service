@@ -26,8 +26,9 @@ func ValidateChatFormat(chat string) error {
 func ValidateSenderInChat(chat string, sender string) error {
 	chatLowercase := strings.ToLower(chat)
 	chatParts := strings.Split(chatLowercase, ":")
+	senderLower := strings.ToLower(sender)
 
-	if chatParts[0] != sender && chatParts[1] != sender{
+	if chatParts[0] != senderLower && chatParts[1] != senderLower{
 		return errors.New("Please ensure the sender is part of the chat room.")
 	}
 	return nil

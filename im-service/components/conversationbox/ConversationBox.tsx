@@ -4,12 +4,13 @@ import styles from "./_conversationBox.module.scss";
 import { useEffect, useState } from "react";
 
 interface ConvoBoxProps {
+  user: string;
   from: string;
   inputValue: string;
 }
 
 export const ConversationBox = (props: ConvoBoxProps) => {
-  const { from, inputValue } = props;
+  const { from, inputValue, user } = props;
   const [message, setMessage] = useState(inputValue || "");
 
   useEffect(() => {
@@ -20,11 +21,29 @@ export const ConversationBox = (props: ConvoBoxProps) => {
 
   return (
     <div className={styles.convoContainer}>
-      {from == "john" ? <IoAccessibilityOutline size={"25px"} /> : null}
-      <div className={styles.convoInput}>
-        <div> {message}</div>
-      </div>
-      {from == "doe" ? <SiProbot size={"25px"} /> : null}
+      {from == user ? (
+        <div className={styles.rightContainer}>
+          <div className={styles.inputValue}>
+            <div>{message}</div>
+          </div>
+          {from == "Doe" ? (
+            <SiProbot size={"25px"} />
+          ) : (
+            <IoAccessibilityOutline size={"25px"} />
+          )}
+        </div>
+      ) : (
+        <div className={styles.leftContainer}>
+          {from == "Doe" ? (
+            <SiProbot size={"25px"} />
+          ) : (
+            <IoAccessibilityOutline size={"25px"} />
+          )}
+          <div className={styles.inputValue}>
+            <div>{message}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

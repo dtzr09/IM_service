@@ -9,9 +9,11 @@ type pullMsgProps = {
 
 export const sendMsgReq = async (props: sendMsgProps) => {
   const { message, user } = props;
+  console.log(user);
+
   try {
     const requestBody = {
-      chat: "john:doe",
+      chat: "John:Doe",
       text: message,
       sender: user,
     };

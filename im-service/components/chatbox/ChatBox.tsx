@@ -4,10 +4,14 @@ import { ConversationBox } from "../conversationbox/ConversationBox";
 import { useRef, useEffect, useState } from "react";
 import { pullMsgReq, sendMsgReq } from "../functions/http_request";
 
-export const ChatBox = () => {
+type ChatBoxProps = {
+  user: string;
+};
+
+export const ChatBox = (props: ChatBoxProps) => {
+  const { user } = props;
   const [message, setMessage] = useState<string>("");
   const [allMessage, setAllMessage] = useState<any>();
-  const [user, setUser] = useState<string>("john");
   const [limit, setLimit] = useState<number>(50);
   const [hasMore, setHasMore] = useState<boolean>(false);
 
@@ -22,7 +26,7 @@ export const ChatBox = () => {
 
   useEffect(() => {
     scrollToLatest();
-  }, [chatBoxRef, allMessage]);
+  }, [allMessage, message, sendMsgRef]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,12 +37,15 @@ export const ChatBox = () => {
       }
     };
 
-    fetchData();
-  }, [user, limit]);
+    const interval = setInterval(fetchData, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleSendMsg = async () => {
     const responseData = await sendMsgReq({ message, user });
-    setUser(user == "john" ? "doe" : "john");
     setMessage("");
   };
 
@@ -69,6 +76,7 @@ export const ChatBox = () => {
                   ref={index === allMessage.length - 1 ? chatBoxRef : null}
                 >
                   <ConversationBox
+                    user={user}
                     from={message.sender}
                     inputValue={message.text}
                   />
@@ -79,7 +87,7 @@ export const ChatBox = () => {
         <div className={styles.inputBox} onKeyDown={handleOnKeyDown}>
           <input
             type="text"
-            placeholder=""
+            placeholder="Press Enter to send message"
             onChange={(e: any) => setMessage(e.target.value)}
             value={message}
           />

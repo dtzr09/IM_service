@@ -1,19 +1,22 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { ChatBox } from "../components/chatbox/ChatBox";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Evercard</title>
-        <meta name="description" content="Evercard" />
-      </Head>
+  const router = useRouter();
+  useEffect(() => {
+    const pageTitle = "Instant Messaging App";
+    document.title = pageTitle;
+    if (router.pathname == "/") router.push("/login");
+  }, []);
 
-      <main>
-        <ChatBox />
-      </main>
+  return (
+    <div>
+      <Head>
+        <title>Instant Messaging App</title>
+      </Head>
     </div>
   );
 };
