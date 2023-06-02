@@ -36,7 +36,7 @@ services:
       - "2379:2379"
   mysql:
     image: mysql:latest
-    container_name: IMDB_service
+    container_name: imdb
     environment:
       - MYSQL_DATABASE=messaging_service
       - MYSQL_ROOT_HOST=%
