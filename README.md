@@ -6,7 +6,7 @@
 3. [Usage](#usage)
 4. [How It Works](#work)
 5. [Performance Testing](#performance)
-6. [Possible Improvments](#improvement)
+6. [Possible Improvments](#improvements)
 
 ## Assignment Overview <a name="introduction"></a>
 #### Assignment
