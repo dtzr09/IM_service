@@ -4,7 +4,9 @@
 1. [Assignment Overview](#introduction)
 2. [Setting Up](#settingup)
 3. [Usage](#usage)
-4. [Performance Testing](#performance)
+4. [How It Works](#work)
+5. [Performance Testing](#performance)
+6. [Possible Improvments](#improvement)
 
 ## Assignment Overview <a name="introduction"></a>
 #### Assignment
@@ -65,6 +67,25 @@ A simple frontend to simulate the sending and retrieving of messages.
 
 You can open up two terminals with different avatar and simulate the sending and receiving of message between the two avatars.
 
+## Request Processing and Validation Flow <a name="work"></a>
+### Send Request
+The request body undergoes a series of validation check.
+1. Ensure no empty field.
+2. All whitespaces were removed for the fields `chat` and `sender`.
+3. The field `chat` has to be in the format of `a:b`.
+4. The `sender` must be part of the `chat`.
+
+Once all validation pass, the values will be inserted in sorted order and in lowercase. E.g. If the `chat` is `John:doe`, the values inserted will be `john:doe`.
+
+### Pull Request
+The request body undergoes a series of validation checks.
+1. Ensure `chat` field is not empty.
+2. The field `chat` has to be in the format of `a:b`.
+3. If the `limit` is not defined or is `0`, it will be set to the default value of `10`.
+4. The `chat` field is transformed to lowercase.
+
+The query being made to the database will be 1 more than the given limit to retrieve the `sendtime` of the next message.
+
 ## Performance Testing <a name="performance"></a>
 ### Requirement
 - Jmeter has to be installed
@@ -77,17 +98,23 @@ You can open up two terminals with different avatar and simulate the sending and
 ### Load and Stress Testing
 - Load and stress testing were performed for both the Pull and Send request.
 #### (a) Send Request
-- At 50qps:
-  ![Screenshot 2023-06-03 at 4 12 51 PM](https://github.com/dtzr09/IM_service/assets/66049247/3d313208-6eb4-44c2-8a49-69dfa2ffac3b)
-  - **The average response time is 5ms.**
-- At 1000qps:
-  ![Screenshot 2023-06-03 at 4 14 27 PM](https://github.com/dtzr09/IM_service/assets/66049247/3ea95de8-7912-4a01-9480-b7921bbe6143)
-  - **The average response time is 9ms.**
-- At 5000qps:
+Request Body (100 words in `text`):
+```bash
+{
+    "chat": "john:doe",
+    "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque purus nisi, aliquam at tincidunt ac, pellentesque eget est. Sed suscipit faucibus eros, sit amet dapibus mi mattis ac. Vestibulum facilisis tellus sapien, eget euismod nisi condimentum in. Aenean tempus pulvinar nisl id varius. Aenean massa felis, vestibulum vitae tempus vel, euismod vel ante. Morbi a condimentum ipsum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed id nisi metus.Integer interdum, eros vel condimentum convallis, tortor lacus auctor dolor, vitae elementum lorem mi vel nulla. Nunc euismod congue tincidunt. Nullam tortor sapien, dapibus eu blandit sed, tempus ac.",
+    "sender": "john"
+}
+```
+- At 50 qps:
+  ![Screenshot 2023-06-03 at 8 54 33 PM](https://github.com/dtzr09/IM_service/assets/66049247/d037e03a-1183-441a-9320-54942d32bb54)
+  - **The average response time is 4ms.**
+- At 1000 qps:
+  ![Screenshot 2023-06-03 at 8 52 14 PM](https://github.com/dtzr09/IM_service/assets/66049247/159f8202-b8b2-4d41-afb8-d52f74c525d6)
+  - **The average response time is 6ms.**
+- At 5000 qps:
   ![Screenshot 2023-06-03 at 4 34 40 PM](https://github.com/dtzr09/IM_service/assets/66049247/1493ad2a-66dd-43c7-b1f1-085e085764b2)
-
-  ![Screenshot 2023-06-03 at 4 34 28 PM](https://github.com/dtzr09/IM_service/assets/66049247/b31d9033-ddc9-4da2-9e83-f878ba03dab0)
-  
+  ![Screenshot 2023-06-03 at 9 41 16 PM](https://github.com/dtzr09/IM_service/assets/66049247/209828c9-c346-4eaf-bba9-8b3293f65c76)
   - **The average response time is 4ms but it ran out of memory at around 40k threads.**
 
 
@@ -95,13 +122,21 @@ You can open up two terminals with different avatar and simulate the sending and
 Queries used:
 ![Screenshot 2023-06-03 at 4 38 35 PM](https://github.com/dtzr09/IM_service/assets/66049247/7980896b-5a7f-48c6-ae3b-e1974efaad2a)
 
-- At 50qps:
-  ![Screenshot 2023-06-03 at 4 39 02 PM](https://github.com/dtzr09/IM_service/assets/66049247/a8f4c1b8-9400-428e-9826-45e8e3821a88)
-  - **The average response time is 41ms.**
+- At 50 qps:
+  ![Screenshot 2023-06-03 at 9 48 29 PM](https://github.com/dtzr09/IM_service/assets/66049247/ad0963b0-9668-4b53-8ada-70c0f4a2a9ef)
+  - **The average response time is 10ms.**
 
-- At 150qps
-  ![Screenshot 2023-06-03 at 6 52 02 PM](https://github.com/dtzr09/IM_service/assets/66049247/1e8e6789-2aae-488c-9a67-c19aa07b8954)
-  - **The average response time is 694ms.**
+- At 150 qps:
+  ![Screenshot 2023-06-03 at 9 47 35 PM](https://github.com/dtzr09/IM_service/assets/66049247/313fc2dc-f731-4a6b-98d9-81da3a4a2b7f)
+  - **The average response time is 9ms.**
   
-- At 200qps
+- At 500 qps:
+  - ![Screenshot 2023-06-03 at 9 50 54 PM](https://github.com/dtzr09/IM_service/assets/66049247/1324a399-9490-4c43-b646-1f66c5ffa38c)
+  - **The average response time is 256ms.**
+  - The thread stops at rouhgly 4.6k and has an error of `Too many connections.`
 
+## Possible Improvements <a name="improvements"></a>
+1. Allow messages to have paragraphing
+2. Ensure that username is unique
+3. Scaling can be done with kubernetes to distribute the traffic for http requests.
+    - I have tried scaling with kubernetes but I am not able to resolve the rpc-server connection to mysql. 
