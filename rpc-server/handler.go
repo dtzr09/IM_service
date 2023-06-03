@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/dtzr09/IM_service/rpc-server/kitex_gen/rpc"
 	"github.com/dtzr09/IM_service/rpc-server/db"
-	validate "github.com/dtzr09/IM_service/rpc-server/validation"
+	validate "github.com/dtzr09/IM_service/rpc-server/validator"
 	"time"
 	"strings"
 )
@@ -22,6 +22,7 @@ func (s *IMServiceImpl) Send(ctx context.Context, req *rpc.SendRequest) (*rpc.Se
 	resp.Code = 0
 	resp.Msg = "Insert values successfully!"
 
+	//Ensure no empty fields
 	if err := validate.ValidateSendRequest(req); err != nil {
 		resp.Code = 500
 		resp.Msg = err.Error()
@@ -32,14 +33,17 @@ func (s *IMServiceImpl) Send(ctx context.Context, req *rpc.SendRequest) (*rpc.Se
 	chat = strings.ReplaceAll(chat, " ", "")
 	text := req.Message.Text
 	sender := req.Message.Sender
+	sender = strings.ReplaceAll(sender, " ", "")
 	sendtime := createTimestamp()
 	
+	//Ensure format of chat field to be a:b
 	if err := validate.ValidateChatFormat(chat); err != nil {
 		resp.Code = 500
 		resp.Msg = err.Error()
 		return resp, err
 	}
 
+	//Ensure that sender is in the chat field
 	if err := validate.ValidateSenderInChat(chat, sender); err != nil {
 		resp.Code = 500
 		resp.Msg = err.Error()
@@ -61,6 +65,7 @@ func (s *IMServiceImpl) Pull(ctx context.Context, req *rpc.PullRequest) (*rpc.Pu
 	resp.Code = 0
 	
 
+	//Ensure that chat field is not empty
 	err := validate.ValidatePullRequest(req)
 	if err != nil{
 		resp.Code = 500
@@ -91,7 +96,7 @@ func (s *IMServiceImpl) Pull(ctx context.Context, req *rpc.PullRequest) (*rpc.Pu
 		reverseSetting = "DESC"
 	}
 
-	rows,err := db.GetMessages(db_client,reverseSetting, chat, cursor)
+	rows,err := db.GetMessages(db_client,reverseSetting, chat, cursor, limit)
 	if err != nil {
 		resp.Code = 500
 		resp.Msg = err.Error()

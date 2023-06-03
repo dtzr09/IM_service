@@ -11,6 +11,9 @@ import (
 func InsertMessage(db_client MySQLClient, chat string, sender string, text string, sendTime int64) error {
 	//sort the chat rm in alphabetical order
 	names := strings.Split(chat, ":")
+	for i, name := range names {
+    names[i] = strings.ToLower(name)
+	}
 	sort.Strings(names)
 	sortedChat := strings.Join(names, ":")
 
@@ -22,20 +25,25 @@ func InsertMessage(db_client MySQLClient, chat string, sender string, text strin
 	return nil
 }
 
-func GetMessages(db_client MySQLClient, reverseSetting string, chat string, cursor int64) (*sql.Rows, error) {
+func GetMessages(db_client MySQLClient, reverseSetting string, chat string, cursor int64, limit int32) (*sql.Rows, error) {
 	names := strings.Split(chat, ":")
+	for i, name := range names {
+    names[i] = strings.ToLower(name)
+	}
 	sort.Strings(names)
 	sortedChat := strings.Join(names, ":")
+	newlimit := limit + 1
 
 	query := `SELECT *, 
-	(SELECT COUNT(*) FROM messages WHERE chat = ? AND sendtime >= ?) AS total_count
-	FROM messages
-	WHERE chat = ? 
-	AND sendtime >= ?
-	ORDER BY sendtime ` + reverseSetting + `
-	`
+						(SELECT COUNT(*) FROM messages WHERE chat = ? AND sendtime >= ?) AS total_count
+						FROM messages
+						WHERE chat = ? 
+						AND sendtime >= ?
+						ORDER BY sendtime ` + reverseSetting + `
+						LIMIT ?
+						`
 
-	rows, err := db_client.SelectQuery(query, sortedChat, cursor, sortedChat, cursor)
+	rows, err := db_client.SelectQuery(query, sortedChat, cursor,  sortedChat, cursor, newlimit)
 		
 		if err != nil {
 			log.Println("Error executing query:", err)
@@ -58,6 +66,7 @@ func GetProperties(rows *sql.Rows, limit int32)([]*rpc.Message, int64, bool, err
 	)
 
 	count := 0
+
 
 	for rows.Next() {
 		if err := rows.Scan(&message_id, &chatRm, &sender, &text,  &sendTime,&totalCount); err != nil {

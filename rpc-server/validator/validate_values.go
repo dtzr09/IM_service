@@ -1,4 +1,4 @@
-package validation
+package validator
 
 import (
 	"github.com/dtzr09/IM_service/rpc-server/kitex_gen/rpc"
