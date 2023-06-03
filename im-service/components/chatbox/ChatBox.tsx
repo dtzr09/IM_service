@@ -74,6 +74,9 @@ export const ChatBox = (props: ChatBoxProps) => {
                 <div
                   key={index}
                   ref={index === allMessage.length - 1 ? chatBoxRef : null}
+                  style={{
+                    position: "relative",
+                  }}
                 >
                   <ConversationBox
                     user={user}

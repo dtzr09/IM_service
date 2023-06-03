@@ -1,28 +1,22 @@
-.convoContainer {
-  padding: 20px;
+.leftContainer {
+  height: fit-content;
   display: flex;
-  gap: 12px;
-  position: relative;
   width: 100%;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  justify-content: flex-end;
 }
 
 .rightContainer {
-  padding: 20px;
+  height: fit-content;
   display: flex;
-  align-items: center;
-  position: absolute;
-  right: 0;
-  gap: 10px;
+  width: 100%;
+  justify-content: flex-start;
 }
 
-.leftContainer {
-  padding: 20px;
+.convoContainer {
+  max-width: 80%;
+  padding: 10px;
   display: flex;
   align-items: center;
-  position: absolute;
-  left: 0;
   gap: 10px;
 }
 

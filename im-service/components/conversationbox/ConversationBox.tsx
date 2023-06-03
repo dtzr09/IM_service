@@ -20,30 +20,38 @@ export const ConversationBox = (props: ConvoBoxProps) => {
   }, [message]);
 
   return (
-    <div className={styles.convoContainer}>
+    <>
       {from == user ? (
-        <div className={styles.rightContainer}>
-          <div className={styles.inputValue}>
-            <div>{message}</div>
+        <div className={styles.leftContainer}>
+          <div className={styles.convoContainer}>
+            <div className={styles.inputValue}>
+              <div>{message}</div>
+            </div>
+            <div>
+              {from == "Doe" ? (
+                <SiProbot size={"25px"} />
+              ) : (
+                <IoAccessibilityOutline size={"25px"} />
+              )}
+            </div>
           </div>
-          {from == "Doe" ? (
-            <SiProbot size={"25px"} />
-          ) : (
-            <IoAccessibilityOutline size={"25px"} />
-          )}
         </div>
       ) : (
-        <div className={styles.leftContainer}>
-          {from == "Doe" ? (
-            <SiProbot size={"25px"} />
-          ) : (
-            <IoAccessibilityOutline size={"25px"} />
-          )}
-          <div className={styles.inputValue}>
-            <div>{message}</div>
+        <div className={styles.rightContainer}>
+          <div className={styles.convoContainer}>
+            <div>
+              {from == "Doe" ? (
+                <SiProbot size={"25px"} />
+              ) : (
+                <IoAccessibilityOutline size={"25px"} />
+              )}
+            </div>
+            <div className={styles.inputValue}>
+              <div>{message}</div>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

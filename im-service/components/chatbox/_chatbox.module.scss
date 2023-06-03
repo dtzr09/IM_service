@@ -17,6 +17,8 @@
     border-radius: 10px;
     margin-bottom: 10px;
     overflow: scroll;
+    display: flex;
+    flex-direction: column;
 
     &::-webkit-scrollbar {
       display: none;
