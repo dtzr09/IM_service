@@ -1,0 +1,9 @@
+run kubectl apply -f etcd-deployment.yaml for all yaml file
+
+run kubernetes get services / deployments to see all the applied files
+
+Need to push the docker image to personal docker registry
+- cd into rpc-server-deployment
+- docker build -t dtzr06/rpc-server:latest .
+- docker push dtzr06/rpc-server:latest
+

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rpc-server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rpc-server
+  template:
+    metadata:
+      labels:
+        app: rpc-server
+    spec:
+      containers:
+        - name: rpc-server
+          image: docker.io/dtzr06/rpc-server:latest
+          ports:
+            - containerPort: 8888
+          env:
+            - name: MYSQL_HOST
+              value: imdb
+            - name: MYSQL_DATABASE
+              value: messaging_service
+            - name: MYSQL_PORT
+              value: "3308"
+            - name: MYSQL_USERNAME
+              value: "user06"
+            - name: MYSQL_PASSWORD
+              value: "password"
+            # - name: MYSQL_USERNAME
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mysql-secrets
+            #       key: username
+            # - name: MYSQL_PASSWORD
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mysql-secrets
+            #       key: password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rpc-server-service
+spec:
+  selector:
+    app: rpc-server
+  ports:
+    - protocol: TCP
+      port: 8888
+      targetPort: 8888
